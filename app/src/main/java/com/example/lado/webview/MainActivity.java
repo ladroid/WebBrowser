@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog progressBar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -33,16 +33,32 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new MyBrowser());
 
         //progressBar = ProgressDialog.show(MainActivity.this, "WebView Example", "Loading...");
-
+        webView.loadUrl("https://google.com");
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = enterURL.getText().toString();
                 webView.getSettings().setLoadsImagesAutomatically(true);
                 webView.getSettings().setJavaScriptEnabled(true);
-                webView.loadUrl(url);
+                webView.clearHistory();
+                webView.clearCache(true);
+                if(savedInstanceState == null) {
+                    webView.loadUrl(url);
+                }
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        webView.restoreState(savedInstanceState);
     }
 
     @Override
@@ -78,5 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.dismiss();
             }
         }
+
     }
 }
